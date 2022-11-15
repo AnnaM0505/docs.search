@@ -5,11 +5,10 @@ GroupDocs.Search API provides the ability for you to embed strong and reliable i
 GroupDocs.Search enables the following search types for your application:
 * **simple search** - returns the exact match of a search term,
 * **fuzzy search** - returns the exact match of a search term and the search results containing the words similar to the search term. The level of fuzziness is configurable,
-* **regular expression search**
-* **boolean search** - users can apply logical operators AND, OR, NOT or the combination thereof to combine search terms and get the finer search results,
-* **wildcard search**
+* **regular expression search** - this search type allows searching for patterns using metacharacters,
+* **boolean search** - users can apply logical operators AND, OR, NOT or the combination thereof to combine search terms and get the finer search results.
 
-With GroupDocs.Search API you can implement search for many document types, including text files, Word, PDF, Excel, Visio, Web files, Email message files, image/video metadata.
+With GroupDocs.Search API you can implement search function for many document types, including text files, Word, PDF, Excel, Visio, Web files, Email message files, image/video metadata.
 
 
 ##  Supported File Formats
@@ -37,11 +36,14 @@ You can combine operators using parentheses.
 ## Use Cases
 ### Boolean Search Using OR Operator
 
-To start search, you need to do the following:
+You can create queries in text and object form.
+
+To perform boolean search, you need to do the following:
 1. create an index folder (for example, `c:\MyIndex\`)
-2. create the new index
-3. add the documents to index (for example, from `c:\MyDocuments\`)
-4. search using text query:  `"Australia OR New Zealand"`
+2. create the new index (`new Index(indexFolder`)
+3. add the documents from the specific folder (`c:\MyDocuments\`) to index (for example, `index.Add(c:\MyDocuments\)`)
+4. search using text query:  `index.Search("Australia OR New Zealand")`
+5. If you want to store search results separately, use object query
 
 ```csharp
 string indexFolder = @"c:\MyIndex\";
@@ -54,11 +56,11 @@ Index index = new Index(indexFolder);
 index.Add(documentsFolder);
  
 // Search with text query
-SearchResult result1 = index.Search("US Open OR Wimbledon");
+SearchResult result1 = index.Search("Australia OR New Zealand");
  
 // Search with object query
-SearchQuery wordQuery1 = SearchQuery.CreateWordQuery("Einstein");
-SearchQuery wordQuery2 = SearchQuery.CreateWordQuery("relativity");
+SearchQuery wordQuery1 = SearchQuery.CreateWordQuery("Australia");
+SearchQuery wordQuery2 = SearchQuery.CreateWordQuery("New Zealand");
 SearchQuery orQuery = SearchQuery.CreateOrQuery(wordQuery1, wordQuery2);
 SearchResult result2 = index.Search(orQuery);
 ```
