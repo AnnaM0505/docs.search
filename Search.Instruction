@@ -3,19 +3,45 @@
 
 GroupDocs.Search API provides the ability for you to embed strong and reliable index-based search feature into your application.
 GroupDocs.Search enables the following search types for your application:
-* simple search
-* fuzzy search
-* regular expression search
-* boolean search
+* **simple search** - returns the exact match of a search term,
+* **fuzzy search** - returns the exact match of a search term and the search results containing the words similar to the search term. The level of fuzziness is configurable,
+* **regular expression search**
+* **boolean search** - users can apply logical operators AND, OR, NOT or the combination thereof to combine search terms and get the finer search results,
+* **wildcard search**
 
 With GroupDocs.Search API you can implement search for many document types, including text files, Word, PDF, Excel, Visio, Web files, Email message files, image/video metadata.
 
-To start using GroupDocs.Search API
+
+##  Supported File Formats
+
+GroupDocs.Search API boolean search options supports the following file formats:
+
+For the list of supported character sets see [Supported Character Types](/https://docs.groupdocs.com/search/net/character-types/).
 
 
-##  Supported Boolean Search Operators
+## Supported Boolean Search Operators
+
+GroupDocs.Search API boolean search function supports the following operators:
+* AND - this operator is used to search for documents containing both search terms joined by this operator. If at least one search terms is absent, the document is not returned in the search results.
+>Example: "US Open AND winner" will return only the documents contaning both terms.
+* OR - this operator is used to search for documents containing at least one search term or both search terms joined by this operator. If at least one search terms is found, the document is returned in the search results.
+>Example: "US Open OR Wimbledon" will return  the documents contaning at least terms.
+* NOT - this operator is used to exclude the search term from the search results. Can be combined with AND and OR operators.
+
+
+>Boolean search operators are always in upper case.
+
+You can combine operators using parentheses. 
+>Example: "(US Open AND winner) OR (Wimbledon AND winner)" will return the documents containing either the combination of "US Open" and "winner" or the combination of "Wimbledon" and "winner" or all four terms. 
+
 ## Use Cases
 ### Boolean Search Using OR Operator
+
+To start search, you need to do the following:
+1. create an index folder (for example, `c:\MyIndex\`)
+2. create the new index
+3. add the documents to index (for example, from `c:\MyDocuments\`)
+4. search using text query:  `"Australia OR New Zealand"`
 
 ```csharp
 string indexFolder = @"c:\MyIndex\";
@@ -28,7 +54,7 @@ Index index = new Index(indexFolder);
 index.Add(documentsFolder);
  
 // Search with text query
-SearchResult result1 = index.Search("Einstein OR relativity");
+SearchResult result1 = index.Search("US Open OR Wimbledon");
  
 // Search with object query
 SearchQuery wordQuery1 = SearchQuery.CreateWordQuery("Einstein");
