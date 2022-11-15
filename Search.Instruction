@@ -1,2 +1,89 @@
-## Introduction
-## How-tos
+# Boolean Search using GroupDocs.Search
+##  Introduction 
+
+GroupDocs.Search API provides the ability for you to embed strong and reliable index-based search feature into your application.
+GroupDocs.Search enables the following search types for your application:
+* simple search
+* fuzzy search
+* regular expression search
+* boolean search
+
+With GroupDocs.Search API you can implement search for many document types, including text files, Word, PDF, Excel, Visio, Web files, Email message files, image/video metadata.
+
+To start using GroupDocs.Search API
+
+
+##  Supported Boolean Search Operators
+## Use Cases
+### Boolean Search Using OR Operator
+
+```csharp
+string indexFolder = @"c:\MyIndex\";
+string documentsFolder = @"c:\MyDocuments\";
+ 
+// Creating an index in the specified folder
+Index index = new Index(indexFolder);
+ 
+// Indexing documents from the specified folder
+index.Add(documentsFolder);
+ 
+// Search with text query
+SearchResult result1 = index.Search("Einstein OR relativity");
+ 
+// Search with object query
+SearchQuery wordQuery1 = SearchQuery.CreateWordQuery("Einstein");
+SearchQuery wordQuery2 = SearchQuery.CreateWordQuery("relativity");
+SearchQuery orQuery = SearchQuery.CreateOrQuery(wordQuery1, wordQuery2);
+SearchResult result2 = index.Search(orQuery);
+```
+
+### Boolean Search Using AND Operator
+
+```csharp
+string indexFolder = @"c:\MyIndex\";
+string documentsFolder = @"c:\MyDocuments\";
+ 
+// Creating an index in the specified folder
+Index index = new Index(indexFolder);
+ 
+// Indexing documents from the specified folder
+index.Add(documentsFolder);
+ 
+// Search with text query
+SearchResult result1 = index.Search("theory AND relativity");
+ 
+// Search with object query
+SearchQuery wordQuery1 = SearchQuery.CreateWordQuery("theory");
+SearchQuery wordQuery2 = SearchQuery.CreateWordQuery("relativity");
+SearchQuery andQuery = SearchQuery.CreateAndQuery(wordQuery1, wordQuery2);
+SearchResult result2 = index.Search(andQuery);
+```
+
+### Complex Boolean Search
+
+```csharp
+string indexFolder = @"c:\MyIndex\";
+string documentsFolder = @"c:\MyDocuments\";
+ 
+// Creating an index in the specified folder
+Index index = new Index(indexFolder);
+ 
+// Indexing documents from the specified folder
+index.Add(documentsFolder);
+ 
+// Search with text query
+SearchResult result1 = index.Search("(theory AND relativity) AND NOT (Einstein OR Albert)");
+ 
+// Search with object query
+SearchQuery theoryWordQuery = SearchQuery.CreateWordQuery("theory");
+SearchQuery relativityWordQuery = SearchQuery.CreateWordQuery("relativity");
+SearchQuery andQuery = SearchQuery.CreateAndQuery(theoryWordQuery, relativityWordQuery);
+ 
+SearchQuery einsteinWordQuery = SearchQuery.CreateWordQuery("Einstein");
+SearchQuery albertWordQuery = SearchQuery.CreateWordQuery("Albert");
+SearchQuery orQuery = SearchQuery.CreateOrQuery(einsteinWordQuery, albertWordQuery);
+SearchQuery notQuery = SearchQuery.CreateNotQuery(orQuery);
+ 
+SearchQuery rootQuery = SearchQuery.CreateAndQuery(andQuery, notQuery);
+SearchResult result2 = index.Search(rootQuery);
+```
