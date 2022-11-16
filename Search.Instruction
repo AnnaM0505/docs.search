@@ -6,14 +6,16 @@ GroupDocs.Search enables the following search types for your application:
 * **simple search** - returns the exact match of a search term,
 * **fuzzy search** - returns the exact match of a search term and the search results containing the words similar to the search term. The level of fuzziness is configurable,
 * **regular expression search** - this search type allows searching for patterns using metacharacters,
-* **boolean search** - users can apply logical operators AND, OR, NOT or the combination thereof to combine search terms and get the finer search results.
+* **boolean search** - users can apply logical operators AND, OR, NOT or the combination thereof to combine search terms and get the finer search results,
+* **wildcard search** - users can specify the wildcard(s) for one or more unknown characters,
+* and many more.
 
-With GroupDocs.Search API you can implement search function for many document types, including text files, Word, PDF, Excel, Visio, Web files, Email message files, image/video metadata.
+With GroupDocs.Search API you can implement search function for various document types, including text files, Word, PDF, Excel, Visio, Web files, Email message files, image/video metadata.
 
 
 ##  Supported File Formats
 
-GroupDocs.Search API boolean search options supports the following file formats:
+For the list of supported document formats and indexing options see [Supported Document Options](https://docs.groupdocs.com/search/net/supported-document-formats/).
 
 For the list of supported character sets see [Supported Character Types](/https://docs.groupdocs.com/search/net/character-types/).
 
@@ -22,28 +24,29 @@ For the list of supported character sets see [Supported Character Types](/https:
 
 GroupDocs.Search API boolean search function supports the following operators:
 * AND - this operator is used to search for documents containing both search terms joined by this operator. If at least one search terms is absent, the document is not returned in the search results.
->Example: "US Open AND winner" will return only the documents contaning both terms.
+>Example: "Australia AND USA" will return only the documents contaning "Australia" and "USA" in the same file.
 * OR - this operator is used to search for documents containing at least one search term or both search terms joined by this operator. If at least one search terms is found, the document is returned in the search results.
->Example: "US Open OR Wimbledon" will return  the documents contaning at least terms.
+>Example: "Australia OR USA" will return  the documents contaning at least one of the terms - "Australia", "USA" or both terms in the same file.
 * NOT - this operator is used to exclude the search term from the search results. Can be combined with AND and OR operators.
+>Example: "Australia AND NOT 2022" will return  the documents contaning the term "Australia", but not containing "2022".
 
 
->Boolean search operators are always in upper case.
+>Always use upper case for Boolean search operators.
 
 You can combine operators using parentheses. 
->Example: "(US Open AND winner) OR (Wimbledon AND winner)" will return the documents containing either the combination of "US Open" and "winner" or the combination of "Wimbledon" and "winner" or all four terms. 
+>Example: "(Australia AND news) OR (USA AND news)" will return the documents containing either the combination of "Australia" and "news" or the combination of "USA" and "news" or all four terms. 
 
 ## Use Cases
 ### Boolean Search Using OR Operator
 
-You can create queries in text and object form.
+You can create queries in text and object form. The feature transforms text queries into object form before running them. To achieve better performance it is recommended to implement queries in the object form.
 
-To perform boolean search, you need to do the following:
+To perform boolean search using OR, you need to do the following:
 1. create an index folder (for example, `c:\MyIndex\`)
 2. create the new index (`new Index(indexFolder`)
 3. add the documents from the specific folder (`c:\MyDocuments\`) to index (for example, `index.Add(c:\MyDocuments\)`)
-4. search using text query:  `index.Search("Australia OR New Zealand")`
-5. If you want to store search results separately, use object query
+4. search using text query:  `index.Search("Australia OR USA")`
+5. If you want to store search results separately, use object query (see the example below).
 
 ```csharp
 string indexFolder = @"c:\MyIndex\";
@@ -56,16 +59,29 @@ Index index = new Index(indexFolder);
 index.Add(documentsFolder);
  
 // Search with text query
-SearchResult result1 = index.Search("Australia OR New Zealand");
+SearchResult result1 = index.Search("Australia OR USA");
  
 // Search with object query
 SearchQuery wordQuery1 = SearchQuery.CreateWordQuery("Australia");
-SearchQuery wordQuery2 = SearchQuery.CreateWordQuery("New Zealand");
+SearchQuery wordQuery2 = SearchQuery.CreateWordQuery("USA");
 SearchQuery orQuery = SearchQuery.CreateOrQuery(wordQuery1, wordQuery2);
 SearchResult result2 = index.Search(orQuery);
 ```
+Result of the text query using OR operator:
+
+![OR query search result.](/image/ORresult.png "OR query search result.")
+
 
 ### Boolean Search Using AND Operator
+
+You can create queries in text and object form. The feature transforms text queries into object form before running them. To achieve better performance it is recommended to implement queries in the object form.
+
+To perform boolean search using AND, you need to do the following:
+1. create an index folder (for example, `c:\MyIndex\`)
+2. create the new index (`new Index(indexFolder`)
+3. add the documents from the specific folder (`c:\MyDocuments\`) to index (for example, `index.Add(c:\MyDocuments\)`)
+4. search using text query:  `index.Search("Australia AND US")`
+5. If you want to store search results separately, use object query (see the example below).
 
 ```csharp
 string indexFolder = @"c:\MyIndex\";
@@ -78,16 +94,29 @@ Index index = new Index(indexFolder);
 index.Add(documentsFolder);
  
 // Search with text query
-SearchResult result1 = index.Search("theory AND relativity");
+SearchResult result1 = index.Search("Australia AND US");
  
 // Search with object query
-SearchQuery wordQuery1 = SearchQuery.CreateWordQuery("theory");
-SearchQuery wordQuery2 = SearchQuery.CreateWordQuery("relativity");
+SearchQuery wordQuery1 = SearchQuery.CreateWordQuery("Australia");
+SearchQuery wordQuery2 = SearchQuery.CreateWordQuery("US");
 SearchQuery andQuery = SearchQuery.CreateAndQuery(wordQuery1, wordQuery2);
 SearchResult result2 = index.Search(andQuery);
 ```
 
+Result of the text query using AND operator:
+
+![AND query search result.](/image/ANDresult.png "AND query search result.")
+
 ### Complex Boolean Search
+
+You can create queries in text and object form. The feature transforms text queries into object form before running them. To achieve better performance it is recommended to implement queries in the object form.
+
+To perform boolean search using the combibation of operators, you need to do the following:
+1. create an index folder (for example, `c:\MyIndex\`)
+2. create the new index (`new Index(indexFolder`)
+3. add the documents from the specific folder (`c:\MyDocuments\`) to index (for example, `index.Add(c:\MyDocuments\)`)
+4. search using text query:  `index.Search("Australia AND US")`
+5. If you want to store search results separately, use object query (see the example below).
 
 ```csharp
 string indexFolder = @"c:\MyIndex\";
@@ -100,18 +129,22 @@ Index index = new Index(indexFolder);
 index.Add(documentsFolder);
  
 // Search with text query
-SearchResult result1 = index.Search("(theory AND relativity) AND NOT (Einstein OR Albert)");
+SearchResult result1 = index.Search("(US AND Australia) AND NOT (elections OR president)");
  
 // Search with object query
-SearchQuery theoryWordQuery = SearchQuery.CreateWordQuery("theory");
-SearchQuery relativityWordQuery = SearchQuery.CreateWordQuery("relativity");
-SearchQuery andQuery = SearchQuery.CreateAndQuery(theoryWordQuery, relativityWordQuery);
+SearchQuery USWordQuery = SearchQuery.CreateWordQuery("US AND Australia");
+SearchQuery AustraliaWordQuery = SearchQuery.CreateWordQuery("Australia");
+SearchQuery andQuery = SearchQuery.CreateAndQuery(USWordQuery, AustraliaWordQuery);
  
-SearchQuery einsteinWordQuery = SearchQuery.CreateWordQuery("Einstein");
-SearchQuery albertWordQuery = SearchQuery.CreateWordQuery("Albert");
-SearchQuery orQuery = SearchQuery.CreateOrQuery(einsteinWordQuery, albertWordQuery);
+SearchQuery electionsWordQuery = SearchQuery.CreateWordQuery("elections");
+SearchQuery presidentWordQuery = SearchQuery.CreateWordQuery("president");
+SearchQuery orQuery = SearchQuery.CreateOrQuery(electionsWordQuery, presidentWordQuery);
 SearchQuery notQuery = SearchQuery.CreateNotQuery(orQuery);
  
 SearchQuery rootQuery = SearchQuery.CreateAndQuery(andQuery, notQuery);
 SearchResult result2 = index.Search(rootQuery);
 ```
+
+Result of the complex query:
+
+![OR query search result.](/image/ORresult.png "OR query search result.")
